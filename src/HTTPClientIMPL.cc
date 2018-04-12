@@ -56,12 +56,12 @@ void HTTPClient::HTTPClientIMPL::send() {
     }
 
     // get the return http code
-    if(_libCurl->getinfo(_curl, CURLINFO_RESPONSE_CODE, &_statusCode) != CCOK) {
+    if(_libCurl->getinfo(_curl, CURLINFO_RESPONSE_CODE, &_res_code) != CCOK) {
         error_client(CERROR_INFOCODE); return;
     }
 
     // set the http status
-    if(_statusCode > 299 ) {
+    if(_res_code > 299 ) {
         error_http(); return;
     }
 
@@ -69,9 +69,10 @@ void HTTPClient::HTTPClientIMPL::send() {
 
 void HTTPClient::HTTPClientIMPL::reset_internal_status() {
 
+    _res_code = 0;
+
     _status = HTTP_STATUS::OK;
-    _statusCode = 0;
-    _statusMex = "";
+    _statusMex = "";    
 
     if(_res_buffer_external) {
         _res_buffer_default.shrink_to_fit();
@@ -113,7 +114,7 @@ void HTTPClient::HTTPClientIMPL::error_client(const std::string& errormex) {
 
 void HTTPClient::HTTPClientIMPL::error_http() {
     _status = HTTP_STATUS::HTTP_ERROR;
-    _statusMex = "HTTPClient::" + std::to_string(_statusCode) + ", ";
+    _statusMex = "HTTPClient::" + std::to_string(_res_code) + ", ";
     if(_res_buffer_external) {
         _statusMex += (std::string(_res_buffer_external->begin(), _res_buffer_external->end()) + ".");
     } 

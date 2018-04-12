@@ -41,9 +41,9 @@ private:
 
     std::vector<char> _res_buffer_default;
     std::vector<char>* _res_buffer_external;
+    uint64_t _res_code;
 
     HTTP_STATUS _status{HTTP_STATUS::OK};
-    uint64_t _statusCode;
     std::string _statusMex;
 
     friend class HTTPClient;

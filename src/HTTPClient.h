@@ -28,14 +28,17 @@ public:
     void user_agent(const std::string& user_agent);
 
     void set_response_buffer(std::vector<char>* response_buffer);
-    std::vector<char> get_resonse_buffer() const;
 
-    bool ok() const;
-    bool is_http_error() const;
-    bool is_client_error() const;
-    HTTP_STATUS status() const;
-    uint64_t status_code() const;
+    std::vector<char> get_resonse_buffer() const;
+    uint64_t response_code() const;
+
+    HTTP_STATUS status() const;    
     std::string status_message() const;
+
+    bool status_ok() const;
+    bool status_is_http_error() const;
+    bool status_is_client_error() const;
+
     void raise_for_status() const;
     void raise_for_http_status() const;
     void raise_for_client_status() const;
