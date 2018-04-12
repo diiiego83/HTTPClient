@@ -23,7 +23,7 @@ void get() {
     std::cout<<" * Performes an http get call to "+url+"\n";
 
     HTTPClient http;
-    http.url(url);
+    http.set_url(url);
     http.send();
     http.raise_for_status();
 
@@ -38,7 +38,7 @@ void get_repeat() {
     std::cout<<" * Reuse the same client handler\n";
 
     HTTPClient http;
-    http.url(url);
+    http.set_url(url);
     for(auto ii=0; ii<5; ii++) {
         http.send();
         http.raise_for_status();
@@ -55,7 +55,7 @@ void get_response() {
     std::cout<<" * Get the response from the default response buffer\n";
 
     HTTPClient http;
-    http.url(url);
+    http.set_url(url);
     http.send();
     http.raise_for_status();
     auto res = http.get_resonse_buffer();
@@ -73,7 +73,7 @@ void get_response_external_buffer() {
     std::cout<<" * Get the response by setting an external buffer\n";
 
     HTTPClient http;
-    http.url(url);
+    http.set_url(url);
     std::vector<char> response(1024);
     http.set_response_buffer(&response);
     http.send();

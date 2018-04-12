@@ -13,11 +13,11 @@ HTTPClient::HTTPClient(): _impl(new HTTPClientIMPL()) { }
 
 HTTPClient::~HTTPClient() { }
 
-void HTTPClient::url(const std::string& url) { 
+void HTTPClient::set_url(const std::string& url) { 
     _impl->_url = url; 
 }
 
-void HTTPClient::user_agent(const std::string& user_agent) {
+void HTTPClient::set_user_agent(const std::string& user_agent) {
     _impl->_userAgent = user_agent;
 }
 
@@ -49,7 +49,7 @@ HTTP_STATUS HTTPClient::status() const {
      return _impl->_status; 
 }
 
-uint64_t HTTPClient::response_code() const {
+uint64_t HTTPClient::get_response_code() const {
     return _impl->_res_code;
 }
 
