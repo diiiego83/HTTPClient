@@ -27,22 +27,30 @@ void get() {
     http.send();
     http.raise_for_status();
 
+    std::cout<<" - Response code: "<<http.get_response_code()<<'\n';    
+
 }
 
 void get_repeat() {
 
-    std::string url("https://httpstat.us/200");
+    std::string url("https://httpstat.us/20");
     
     print_line();
-    std::cout<<" * Performes 5 http get call to "+url+"\n";
-    std::cout<<" * Reuse the same client handler\n";
+    std::cout<<" * Performes 5 http get call to "+url+"x\n";
+    std::cout<<" * Reuse the same client handler.\n";
 
     HTTPClient http;
-    http.set_url(url);
-    for(auto ii=0; ii<5; ii++) {
+    http.set_url(url+"0");       
+    for(auto ii=0; ii<4; ii++) {     
         http.send();
         http.raise_for_status();
-    }         
+        std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
+    }
+
+    http.set_url(url+"4");
+    http.send();      
+    http.raise_for_status();
+    std::cout<<" - Response code: "<<http.get_response_code()<<'\n';       
 
 }
 
@@ -60,7 +68,8 @@ void get_response() {
     http.raise_for_status();
     auto res = http.get_resonse_buffer();
 
-    std::cout<<" - code: "<<http.get_response_code()<<", response: "<<res.data()<<'\n';    
+    std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
+    std::cout<<" - Rsponse body: "<<res.data()<<'\n';
 
 }
 
@@ -79,8 +88,8 @@ void get_response_external_buffer() {
     http.send();
     http.raise_for_status();
     
-    std::cout<<" - code: "<<http.get_response_code()<<", response: "<<response.data()<<'\n';   
-
+    std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
+    std::cout<<" - Rsponse body: "<<response.data()<<'\n';
 }
 
 int main(int argc, char* argv[]) {
