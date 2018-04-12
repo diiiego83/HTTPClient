@@ -60,7 +60,7 @@ void get_response() {
     http.raise_for_status();
     auto res = http.get_resonse_buffer();
 
-    std::cout<<" - "<<res.data()<<'\n';    
+    std::cout<<" - code: "<<http.get_response_code()<<", response: "<<res.data()<<'\n';    
 
 }
 
@@ -79,7 +79,7 @@ void get_response_external_buffer() {
     http.send();
     http.raise_for_status();
     
-    std::cout<<" - "<<response.data()<<'\n';    
+    std::cout<<" - code: "<<http.get_response_code()<<", response: "<<response.data()<<'\n';   
 
 }
 
