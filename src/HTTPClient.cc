@@ -21,6 +21,14 @@ void HTTPClient::user_agent(const std::string& user_agent) {
     _impl->_userAgent = user_agent;
 }
 
+void HTTPClient::set_response_buffer(std::vector<char>* response_buffer) {
+    _impl->_res_buffer_external = response_buffer;
+}
+
+std::vector<char> HTTPClient::get_resonse_buffer() const {
+    return _impl->_res_buffer_default;
+}
+
 void HTTPClient::send() {
     _impl->send();
 }

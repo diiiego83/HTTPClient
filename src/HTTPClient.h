@@ -9,6 +9,7 @@
 #define HTTP_CLIENT_H
 
 #include <memory>
+#include <vector>
 
 namespace httpclient {
 
@@ -25,6 +26,9 @@ public:
 
     void url(const std::string& url);
     void user_agent(const std::string& user_agent);
+
+    void set_response_buffer(std::vector<char>* response_buffer);
+    std::vector<char> get_resonse_buffer() const;
 
     bool ok() const;
     bool is_http_error() const;

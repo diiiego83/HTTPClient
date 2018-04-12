@@ -73,15 +73,17 @@ void HTTPClient::HTTPClientIMPL::reset_internal_status() {
     _statusCode = 0;
     _statusMex = "";
 
-    if(_res_buffer_type == BUFFER_TYPE::DEFAULT) {
+    if(_res_buffer_external) {
+        _res_buffer_default.shrink_to_fit();
+        _res_buffer_external->clear();
+    } else {
         if(_res_buffer_default.capacity() > 0) {
             _res_buffer_default.clear();
         } else {
             _res_buffer_default.reserve(CURL_MAX_WRITE_SIZE);
         }
-    } else {
-        _res_buffer_default.shrink_to_fit();
     }
+
 }
 
 size_t HTTPClient::HTTPClientIMPL::write_callback(  char *ptr, 
@@ -93,10 +95,11 @@ size_t HTTPClient::HTTPClientIMPL::write_callback(  char *ptr,
     auto client = reinterpret_cast<HTTPClient::HTTPClientIMPL*>(userdata);
 
     auto ccptr = reinterpret_cast<const char*>(ptr);
-    if(client->_res_buffer_type == BUFFER_TYPE::DEFAULT) {
+    if(client->_res_buffer_external) {
+        client->_res_buffer_external->insert(client->_res_buffer_external->end(), ccptr, ccptr + realsize);
+    } 
+    else {
         client->_res_buffer_default.insert(client->_res_buffer_default.end(), ccptr, ccptr + realsize);
-    } else {
-        exit(1); // TODO
     }
 
   return realsize;
@@ -111,11 +114,12 @@ void HTTPClient::HTTPClientIMPL::error_client(const std::string& errormex) {
 void HTTPClient::HTTPClientIMPL::error_http() {
     _status = HTTP_STATUS::HTTP_ERROR;
     _statusMex = "HTTPClient::" + std::to_string(_statusCode) + ", ";
-    if(_res_buffer_type == BUFFER_TYPE::DEFAULT ) {
+    if(_res_buffer_external) {
+        _statusMex += (std::string(_res_buffer_external->begin(), _res_buffer_external->end()) + ".");
+    } 
+    else {
         _statusMex += (std::string(_res_buffer_default.begin(), _res_buffer_default.end()) + ".");
-    } else {
-        exit(1); // [TODO]
-    }
+    } 
 }
 
 } // namespace httpclient

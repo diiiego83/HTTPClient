@@ -39,9 +39,8 @@ private:
 
     std::string _url;
 
-    enum class BUFFER_TYPE { DEFAULT };
-    BUFFER_TYPE _res_buffer_type{ BUFFER_TYPE::DEFAULT };
     std::vector<char> _res_buffer_default;
+    std::vector<char>* _res_buffer_external;
 
     HTTP_STATUS _status{HTTP_STATUS::OK};
     uint64_t _statusCode;
