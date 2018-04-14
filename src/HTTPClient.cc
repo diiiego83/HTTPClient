@@ -37,14 +37,6 @@ bool HTTPClient::status_ok() const {
      return _impl->_status == HTTP_STATUS::OK; 
 }
 
-bool HTTPClient::status_is_http_error() const {
-     return _impl->_status == HTTP_STATUS::HTTP_ERROR; 
-}
-
-bool HTTPClient::status_is_client_error() const {
-     return _impl->_status == HTTP_STATUS::CLIENT_ERROR; 
-}
-
 HTTP_STATUS HTTPClient::status() const {
      return _impl->_status; 
 }
@@ -62,11 +54,15 @@ void HTTPClient::raise_for_status() const {
 }
 
 void HTTPClient::raise_for_http_status() const {
-    if(status_is_http_error()) { throw std::runtime_error(_impl->_statusMex); }
+    if(status()==HTTP_STATUS::HTTP_ERROR) {
+         throw std::runtime_error(_impl->_statusMex);
+    }
 }
 
 void HTTPClient::raise_for_client_status() const {
-    if(status_is_client_error()) { throw std::runtime_error(_impl->_statusMex); }
+    if(status()==HTTP_STATUS::CLIENT_ERROR) { 
+        throw std::runtime_error(_impl->_statusMex); 
+    }
 }
 
 } // namespace httpclient
