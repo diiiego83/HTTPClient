@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <vector>
+#include <unordered_map>
 
 namespace httpclient {
 
@@ -25,9 +26,8 @@ public:
     ~HTTPClient();
 
     void set_url(const std::string& url);
+    void set_headers(const std::unordered_map<std::string, std::string>& headers);
     void set_response_buffer(std::vector<char>* response_buffer);
-
-    void set_user_agent(const std::string& user_agent);    
 
     std::vector<char> get_resonse_buffer() const;
     uint64_t get_response_code() const;

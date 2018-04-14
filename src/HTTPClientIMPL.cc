@@ -31,11 +31,6 @@ void HTTPClient::HTTPClientIMPL::send() {
         _libCurl->reset(_curl);
     }
 
-    // set the user agent
-    if(_libCurl->setopt(_curl, CURLOPT_USERAGENT, _userAgent.c_str()) !=  CCOK) {
-        error_client(CERROR_USERAGENT); return;
-    }    
-
     // set the url
     if(_url.empty()) { error_client(ERROR_URL); return; }
     if(_libCurl->setopt(_curl, CURLOPT_URL, _url.c_str()) !=  CCOK) {

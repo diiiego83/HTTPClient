@@ -17,8 +17,8 @@ void HTTPClient::set_url(const std::string& url) {
     _impl->_url = url; 
 }
 
-void HTTPClient::set_user_agent(const std::string& user_agent) {
-    _impl->_userAgent = user_agent;
+void HTTPClient::set_headers(const std::unordered_map<std::string, std::string>& headers) {
+    _impl->_headers = headers;
 }
 
 void HTTPClient::set_response_buffer(std::vector<char>* response_buffer) {
