@@ -35,7 +35,7 @@ private:
     std::shared_ptr<LibCurl>    _libCurl;
     std::shared_ptr<CURL>       _curl;
 
-    std::string _userAgent = "httpclient/1.0"; // vscode bug if using init. list
+    std::string _userAgent{"httpclient/1.0"}; // vscode bug if using init. list
 
     std::string _url;
 

@@ -16,7 +16,8 @@
             ],
             "defines": [
                 "__linux__",
-                "__x86_64__"
+                "__x86_64__",
+                "__SIZE_TYPE__=long long unsigned int"
             ],
             "browse": {
                 "path": [
