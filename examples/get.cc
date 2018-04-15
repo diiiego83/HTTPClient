@@ -47,6 +47,7 @@ void get_opt() {
     HTTPClient http;
     http.get(opt);
     http.raise_for_status();
+
     std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
     std::cout<<" - Response body: "<<http.get_resonse_message().data()<<'\n';
 
@@ -65,15 +66,18 @@ void get_repeat() {
     opt.headers["Accept"] = "application/json";
 
     HTTPClient http;    
-    for(auto ii=0; ii<4; ii++) {     
+    for(auto ii=0; ii<4; ii++) { 
+
         http.get(opt);
         http.raise_for_status();
+
         std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
     }
 
     opt.url = url + "4";
     http.get(opt);      
     http.raise_for_status();
+
     std::cout<<" - Response code: "<<http.get_response_code()<<'\n';       
 
 }
