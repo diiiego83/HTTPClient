@@ -17,8 +17,8 @@ void inline print_line() {
 
 void get() {
 
-    // std::string url("http://scooterlabs.com/echo");
     std::string url("https://httpstat.us/200"); 
+    
     print_line();
     std::cout<<" * Performes an http get call to "+url+"\n"; 
 
@@ -27,7 +27,7 @@ void get() {
     http.raise_for_status();
 
     std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
-    std::cout<<" - Response body: "<<http.get_resonse_buffer().data()<<'\n';
+    std::cout<<" - Response body: "<<http.get_resonse_message().data()<<'\n';
 
 }
 
@@ -48,70 +48,58 @@ void get_opt() {
     http.get(opt);
     http.raise_for_status();
     std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
-    std::cout<<" - Response body: "<<http.get_resonse_buffer().data()<<'\n';
+    std::cout<<" - Response body: "<<http.get_resonse_message().data()<<'\n';
 
 }
 
-// void get_repeat() {
+void get_repeat() {
 
-//     std::string url("https://httpstat.us/20");
+    std::string url("https://httpstat.us/20");
     
-//     print_line();
-//     std::cout<<" * Performes 5 http get call to "+url+"x\n";
-//     std::cout<<" * Reuse the same client handler.\n";
+    print_line();
+    std::cout<<" * Performes 5 http get call to "+url+"x\n";
+    std::cout<<" * Reuse the same client handler.\n";
 
-//     HTTPClient http;
-//     http.set_url(url+"0");       
-//     for(auto ii=0; ii<4; ii++) {     
-//         http.get();
-//         http.raise_for_status();
-//         std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
-//     }
+    HTTPOptions opt;
+    opt.url = url + "0";
+    opt.headers["Accept"] = "application/json";
 
-//     http.set_url(url+"4");
-//     http.get();      
-//     http.raise_for_status();
-//     std::cout<<" - Response code: "<<http.get_response_code()<<'\n';       
+    HTTPClient http;    
+    for(auto ii=0; ii<4; ii++) {     
+        http.get(opt);
+        http.raise_for_status();
+        std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
+    }
 
-// }
+    opt.url = url + "4";
+    http.get(opt);      
+    http.raise_for_status();
+    std::cout<<" - Response code: "<<http.get_response_code()<<'\n';       
 
-// void get_response() {
+}
 
-//     std::string url("http://scooterlabs.com/echo");
+void get_response_external_buffer() {
+
+    std::string url("https://httpstat.us/200");
     
-//     print_line();
-//     std::cout<<" * Performes an http get call to "+url+"\n";
-//     std::cout<<" * Get the response from the default response buffer\n";
+    print_line();
+    std::cout<<" * Performes an http get call to "+url+"\n";
+    std::cout<<" * Get the response by setting an external buffer\n";
 
-//     HTTPClient http;
-//     http.add_header("Accept", "applicatioon/json");
-//     http.get(url);
-//     http.raise_for_status();
-//     auto res = http.get_resonse_buffer();
+    std::vector<char> mybuffer(1024);
 
-//     std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
-//     std::cout<<" - Rsponse body: "<<res.data()<<'\n';
+    HTTPOptions opt;
+    opt.url = url;
+    opt.headers["Accept"] = "application/json";
 
-// }
+    HTTPClient http;
+    http.set_response_buffer(&mybuffer);
+    http.get(opt);
+    http.raise_for_status();    
 
-// void get_response_external_buffer() {
-
-//     std::string url("http://scooterlabs.com/echo");
-    
-//     print_line();
-//     std::cout<<" * Performes an http get call to "+url+"\n";
-//     std::cout<<" * Get the response by setting an external buffer\n";
-
-//     std::vector<char> mybuffer(1024);
-
-//     HTTPClient http;
-//     http.set_response_buffer(&mybuffer);
-//     http.get(url, {{"Accept", "application/json"}});
-//     http.raise_for_status();    
-
-//     std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
-//     std::cout<<" - Rsponse body: "<<mybuffer.data()<<'\n';    
-// }
+    std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
+    std::cout<<" - Rsponse body: "<<mybuffer.data()<<'\n';    
+}
 
 int main(int argc, char* argv[]) {
 
@@ -119,11 +107,11 @@ int main(int argc, char* argv[]) {
 
         get();
 
-        // get_repeat();
+        get_opt();
 
-        // get_response();
+        get_repeat();
 
-        // get_response_external_buffer();
+        get_response_external_buffer();
 
     } catch(std::runtime_error err) {
         std::cout<<"[ERROR] "<<err.what()<<'\n';

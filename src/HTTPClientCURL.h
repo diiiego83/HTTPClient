@@ -118,8 +118,6 @@ public:
         ::curl_slist_free_all(list);
     }
 
-
-
 };
 
 } // namespace httpclient

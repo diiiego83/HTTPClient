@@ -30,11 +30,8 @@ public:
     HTTPClient& operator = (const HTTPClient& rhs) = delete;
     ~HTTPClient();
 
-    // void set_url(const std::string& url);
-    // void add_header(const std::string& key, const std::string& value);
-
     void set_response_buffer(std::vector<char>* response_buffer);
-    std::vector<char> get_resonse_buffer() const;
+    std::string get_resonse_message() const;
     uint64_t get_response_code() const;
 
     HTTP_STATUS status() const;
