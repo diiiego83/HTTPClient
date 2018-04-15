@@ -21,12 +21,11 @@ void client_status() {
     std::cout<<" * Raise for client error status, no url set\n";
 
     HTTPOptions opt;
-    opt.url = "https://httpstat.us/200";
     opt.headers["Accept"] = "application/json";
 
-    HTTPClient http;
-    http.get(opt);    
+    HTTPClient http;   
     try {
+        http.get(opt);         
         http.raise_for_client_status();
     } catch(std::runtime_error err) {
         std::cout<<" # "<<err.what()<<'\n';
@@ -40,7 +39,7 @@ void http_status() {
     std::cout<<" * Raise for http error status, 500 Internal Server Error\n";
 
     HTTPOptions opt;
-    opt.url = "https://httpstat.us/200";
+    opt.url = "https://httpstat.us/500";
     opt.headers["Accept"] = "application/json";
 
     HTTPClient http;
