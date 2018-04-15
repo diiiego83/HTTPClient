@@ -7,19 +7,21 @@
 
 #include "HTTPClientIMPL.h"
 
+#include <iostream> // TODO
+
 namespace httpclient {
 
 HTTPClient::HTTPClient(): _impl(new HTTPClientIMPL()) { }
 
 HTTPClient::~HTTPClient() { }
 
-void HTTPClient::set_url(const std::string& url) { 
-    _impl->_url = url; 
-}
+// void HTTPClient::set_url(const std::string& url) { 
+//     _impl->_url = url; 
+// }
 
-void HTTPClient::set_headers(const std::unordered_map<std::string, std::string>& headers) {
-    _impl->_headers = headers;
-}
+// void HTTPClient::add_header(const std::string& key, const std::string& value) {
+//     _impl->_headers.emplace(key, value);
+// }
 
 void HTTPClient::set_response_buffer(std::vector<char>* response_buffer) {
     _impl->_res_buffer_external = response_buffer;
@@ -29,8 +31,13 @@ std::vector<char> HTTPClient::get_resonse_buffer() const {
     return _impl->_res_buffer_default;
 }
 
-void HTTPClient::send() {
-    _impl->send();
+void HTTPClient::get(const HTTPOptions& opt) {
+    _impl->send(opt);
+}
+
+void HTTPClient::get(const std::string& url, 
+         const std::unordered_map<std::string, std::string> headers) {
+    _impl->send(url, headers);
 }
 
 bool HTTPClient::status_ok() const {

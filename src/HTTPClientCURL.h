@@ -98,6 +98,10 @@ public:
         return ::curl_easy_setopt(curl.get(), opt, fun);
     }
 
+    CURLcode setopt(std::shared_ptr<CURL> curl, CURLoption opt, curl_slist* list) {
+        return ::curl_easy_setopt(curl.get(), opt, list);
+    }
+
     CURLcode  perform(std::shared_ptr<CURL> curl) {
         return ::curl_easy_perform(curl.get());
     }
@@ -105,6 +109,16 @@ public:
     CURLcode getinfo(std::shared_ptr<CURL> curl, CURLINFO  info, uint64_t* codep) {
         return ::curl_easy_getinfo(curl.get(), info, codep);
     }
+
+    curl_slist *slist_append(curl_slist* list, const char* item) {
+        return ::curl_slist_append(list, item);
+    }
+
+    void slist_free(curl_slist* list) {
+        ::curl_slist_free_all(list);
+    }
+
+
 
 };
 

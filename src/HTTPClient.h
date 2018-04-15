@@ -16,6 +16,11 @@ namespace httpclient {
 
 enum class HTTP_STATUS { OK, CLIENT_ERROR, HTTP_ERROR };
 
+struct HTTPOptions { 
+    std::string url;
+    std::unordered_map<std::string, std::string> headers;
+};
+
 class HTTPClient {
 
 public:
@@ -25,10 +30,10 @@ public:
     HTTPClient& operator = (const HTTPClient& rhs) = delete;
     ~HTTPClient();
 
-    void set_url(const std::string& url);
-    void set_headers(const std::unordered_map<std::string, std::string>& headers);
-    void set_response_buffer(std::vector<char>* response_buffer);
+    // void set_url(const std::string& url);
+    // void add_header(const std::string& key, const std::string& value);
 
+    void set_response_buffer(std::vector<char>* response_buffer);
     std::vector<char> get_resonse_buffer() const;
     uint64_t get_response_code() const;
 
@@ -40,7 +45,10 @@ public:
     void raise_for_http_status() const;
     void raise_for_client_status() const;
 
-    void send();
+    void get(const HTTPOptions& opt);
+    void get(const std::string& url, 
+             const std::unordered_map<std::string, std::string> headers = 
+                   std::unordered_map<std::string, std::string>());
 
 private:
 

@@ -19,7 +19,9 @@ class HTTPClient::HTTPClientIMPL{
 public:
 
     HTTPClientIMPL();   
-    void send();
+    void send(const std::string& url, 
+              const std::unordered_map<std::string, std::string> headers);
+    void send(const HTTPOptions& opt);
 
 private:
 
@@ -35,11 +37,11 @@ private:
     std::shared_ptr<LibCurl>    _libCurl;
     std::shared_ptr<CURL>       _curl;
 
-    std::string _url;
-    std::unordered_map<std::string, std::string> _headers;
+    // std::string _url;
+    // std::unordered_map<std::string, std::string> _headers;
 
     std::vector<char> _res_buffer_default;
-    std::vector<char>* _res_buffer_external;
+    std::vector<char>* _res_buffer_external{nullptr};
     uint64_t _res_code;
 
     HTTP_STATUS _status{HTTP_STATUS::OK};

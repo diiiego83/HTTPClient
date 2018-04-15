@@ -14,7 +14,8 @@ namespace httpclient {
 
 HTTPClient::HTTPClientIMPL::HTTPClientIMPL(): _libCurl(LibCurl::Load()) { }        
 
-void HTTPClient::HTTPClientIMPL::send() {
+void HTTPClient::HTTPClientIMPL::send(const std::string& url, 
+    const std::unordered_map<std::string, std::string> headers) {
 
     CURLcode ccode;
     auto CCOK = CURLcode::CURLE_OK;
@@ -29,12 +30,25 @@ void HTTPClient::HTTPClientIMPL::send() {
         if(!_curl) { throw std::runtime_error(CERROR_INIT); }
     } else {
         _libCurl->reset(_curl);
-    }
+    }    
 
     // set the url
-    if(_url.empty()) { error_client(ERROR_URL); return; }
-    if(_libCurl->setopt(_curl, CURLOPT_URL, _url.c_str()) !=  CCOK) {
+    if(url.empty()) { error_client(ERROR_URL); return; }
+    if(_libCurl->setopt(_curl, CURLOPT_URL, url.c_str()) !=  CCOK) {
         error_client(CERROR_URL); return;
+    }
+
+    // set the headers
+    curl_slist* headers_slist = nullptr;
+    for(auto &header: headers) {
+        headers_slist = _libCurl->slist_append(
+            headers_slist, 
+            (header.first + ": "+ header.second).c_str());
+    }
+    if(headers_slist) {
+        if(_libCurl->setopt(_curl, CURLOPT_HTTPHEADER, headers_slist) !=  CCOK) {
+            error_client(CERROR_URL); return;
+        }
     }
 
     // set the callback write function
@@ -58,6 +72,76 @@ void HTTPClient::HTTPClientIMPL::send() {
     // set the http status
     if(_res_code > 299 ) {
         error_http(); return;
+    }
+
+    // clear headers
+    if(headers_slist) {
+        _libCurl->slist_free(headers_slist);
+    }
+}
+
+void HTTPClient::HTTPClientIMPL::send(const HTTPOptions& opt) {
+
+    CURLcode ccode;
+    auto CCOK = CURLcode::CURLE_OK;
+
+    // reset the internal client status before perform the request
+    reset_internal_status();
+
+    // initialize a curl handler or reset the previous one
+    // for consecutive call
+    if(_curl.use_count() == 0) {
+        _curl = _libCurl->init();
+        if(!_curl) { throw std::runtime_error(CERROR_INIT); }
+    } else {
+        _libCurl->reset(_curl);
+    }
+
+    // set the url
+    if(opt.url.empty()) { error_client(ERROR_URL); return; }
+    if(_libCurl->setopt(_curl, CURLOPT_URL, opt.url.c_str()) !=  CCOK) {
+        error_client(CERROR_URL); return;
+    }
+
+    // set the headers
+    curl_slist* headers_slist = nullptr;
+    for(auto &header: opt.headers) {
+        headers_slist = _libCurl->slist_append(
+            headers_slist, 
+            (header.first + ": "+ header.second).c_str());
+    }
+    if(headers_slist) {
+        if(_libCurl->setopt(_curl, CURLOPT_HTTPHEADER, headers_slist) !=  CCOK) {
+            error_client(CERROR_URL); return;
+        }
+    }
+
+    // set the callback write function
+    if(_libCurl->setopt(_curl, CURLOPT_WRITEDATA, reinterpret_cast<void*>(this)) != CCOK) {
+        error_client(CERROR_WRITEDATA); return;
+    }
+    if(_libCurl->setopt(_curl, CURLOPT_WRITEFUNCTION, &HTTPClientIMPL::write_callback) != CCOK) {
+        error_client(CERROR_WRITEDATA); return;
+    }    
+
+    // perform the http request
+    if(_libCurl->perform(_curl) !=  CCOK) {
+        error_client(CERROR_PERFORM); return;
+    }
+
+    // get the return http code
+    if(_libCurl->getinfo(_curl, CURLINFO_RESPONSE_CODE, &_res_code) != CCOK) {
+        error_client(CERROR_INFOCODE); return;
+    }
+
+    // set the http status
+    if(_res_code > 299 ) {
+        error_http(); return;
+    }
+
+    // clear headers
+    if(headers_slist) {
+        _libCurl->slist_free(headers_slist);
     }
 
 }
