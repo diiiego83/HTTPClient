@@ -27,7 +27,7 @@ void get() {
     http.raise_for_status();
 
     std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
-    std::cout<<" - Response body: "<<http.get_resonse_message().data()<<'\n';
+    std::cout<<" - Response body: "<<http.get_resonse_message()<<'\n';
 
 }
 
@@ -49,7 +49,7 @@ void get_opt() {
     http.raise_for_status();
 
     std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
-    std::cout<<" - Response body: "<<http.get_resonse_message().data()<<'\n';
+    std::cout<<" - Response body: "<<http.get_resonse_message()<<'\n';
 
 }
 
