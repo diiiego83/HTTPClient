@@ -11,14 +11,25 @@ add_library(httpclient SHARED ${sources})
 
 # BUILD EXAMPLES
 
-file(GLOB sources examples/*.cc)
+file(GLOB sources test/examples/*.cc)
 foreach(source ${sources})
     get_filename_component(source ${source} NAME)
     string(REGEX REPLACE "\\.[^.]*$" "" program_name ${source})
-    add_executable(${program_name} examples/${source})
+    add_executable(${program_name} test/examples/${source})
     target_link_libraries(${program_name} httpclient curl)
     set_target_properties(${program_name} PROPERTIES RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_BINARY_DIR}/bin/examples)
 endforeach()
+
+# BUILD UNIT TEST
+
+include(coverage)
+
+enable_testing()
+add_subdirectory(test/googletest/googletest EXCLUDE_FROM_ALL)
+include_directories(test/googletest/googletest/include)
+add_executable(utx_httpclient test/utest/utx_httpclient.cc src/HTTPClient.cc src/HTTPClientIMPL.cc)
+target_link_libraries(utx_httpclient curl gtest)
+add_test(utx_httpclient_test utx_httpclient)
 
 # INSTALL
 
