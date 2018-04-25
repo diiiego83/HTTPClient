@@ -29,7 +29,8 @@ private:
     void error_client(const std::string& error);
     void error_http();
 
-    static size_t write_callback(char *ptr, size_t size, size_t nmemb, void *userdata);
+    static size_t write_callback(const void *ptr, size_t size, size_t nmemb, void *userdata);
+    static size_t header_callback(const void *ptr, size_t size, size_t nmemb, void *userdata);
 
 private:
 
@@ -39,6 +40,8 @@ private:
     std::string _res_buffer_default;
     std::vector<char>* _res_buffer_external{nullptr};
     uint64_t _res_code;
+    std::unordered_map<std::string, std::string> _res_headers;
+    bool _res_headers_on{false};
 
     HTTP_STATUS _status{HTTP_STATUS::OK};
     std::string _statusMex;

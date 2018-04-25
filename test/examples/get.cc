@@ -26,8 +26,8 @@ void get() {
     http.get(url, {{"Accept", "application/json"}});
     http.raise_for_status();
 
-    std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
-    std::cout<<" - Response body: "<<http.get_resonse_message()<<'\n';
+    std::cout<<"   - Response code: "<<http.get_response_code()<<'\n';
+    std::cout<<"   - Response body: "<<http.get_resonse_message()<<'\n';
 
 }
 
@@ -48,8 +48,8 @@ void get_opt() {
     http.get(opt);
     http.raise_for_status();
 
-    std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
-    std::cout<<" - Response body: "<<http.get_resonse_message()<<'\n';
+    std::cout<<"   - Response code: "<<http.get_response_code()<<'\n';
+    std::cout<<"   - Response body: "<<http.get_resonse_message()<<'\n';
 
 }
 
@@ -71,14 +71,14 @@ void get_repeat() {
         http.get(opt);
         http.raise_for_status();
 
-        std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
+        std::cout<<"   - Response code: "<<http.get_response_code()<<'\n';
     }
 
     opt.url = url + "4";
     http.get(opt);      
     http.raise_for_status();
 
-    std::cout<<" - Response code: "<<http.get_response_code()<<'\n';       
+    std::cout<<"   - Response code: "<<http.get_response_code()<<'\n';       
 
 }
 
@@ -101,8 +101,26 @@ void get_response_external_buffer() {
     http.get(opt);
     http.raise_for_status();    
 
-    std::cout<<" - Response code: "<<http.get_response_code()<<'\n';
-    std::cout<<" - Rsponse body: "<<mybuffer.data()<<'\n';    
+    std::cout<<"   - Response code: "<<http.get_response_code()<<'\n';
+    std::cout<<"   - Rsponse body: "<<mybuffer.data()<<'\n';    
+}
+
+void get_response_headers() {
+    std::string url("https://httpstat.us/200"); 
+    
+    print_line();
+    std::cout<<" * Performes an http get call to "+url+"\n"; 
+    std::cout<<" * Print the response headers\n";
+
+    HTTPClient http;
+    http.enable_response_headers();
+    http.get(url);
+    http.raise_for_status();
+
+    auto headers = http.get_response_headers();
+    for(auto &header: headers) {
+        std::cout<<"   - "<<header.first<<": "<<header.second<<'\n';
+    }
 }
 
 int main(int argc, char* argv[]) {
@@ -116,6 +134,8 @@ int main(int argc, char* argv[]) {
         get_repeat();
 
         get_response_external_buffer();
+
+        get_response_headers();
 
     } catch(std::runtime_error err) {
         std::cout<<"[ERROR] "<<err.what()<<'\n';

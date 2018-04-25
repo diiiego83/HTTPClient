@@ -94,9 +94,9 @@ public:
     }
 
     CURLcode setopt(std::shared_ptr<CURL> curl, CURLoption opt, 
-                    size_t (*fun)(char *ptr, size_t size, size_t nmemb, void *userdata)) {
+                    size_t (*fun)(const void *ptr, size_t size, size_t nmemb, void *userdata)) {
         return ::curl_easy_setopt(curl.get(), opt, fun);
-    }
+    }    
 
     CURLcode setopt(std::shared_ptr<CURL> curl, CURLoption opt, curl_slist* list) {
         return ::curl_easy_setopt(curl.get(), opt, list);

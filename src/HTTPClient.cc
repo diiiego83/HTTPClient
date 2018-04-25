@@ -17,8 +17,20 @@ void HTTPClient::set_response_buffer(std::vector<char>* response_buffer) {
     _impl->_res_buffer_external = response_buffer;
 }
 
+void HTTPClient::enable_response_headers() {
+    _impl->_res_headers_on=true;
+}
+
+void HTTPClient::disable_response_headers() {
+    _impl->_res_headers_on=false;
+}
+
 std::string HTTPClient::get_resonse_message() const {
     return _impl->_res_buffer_default;
+}
+
+std::unordered_map<std::string, std::string> HTTPClient::get_response_headers() const {
+    return _impl->_res_headers;
 }
 
 void HTTPClient::get(const HTTPOptions& opt) {

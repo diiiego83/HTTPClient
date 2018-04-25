@@ -17,6 +17,8 @@ namespace httpclient{
     const std::string CERROR_INIT = "HTTPClient::LibCurl::Init, an error occurred initlizing a curl handler.";
     const std::string CERROR_USERAGENT = "HTTPClient::LibCurl::UserAgent, an error occurred setting the user agent.";    
     const std::string CERROR_URL = "HTTPClient::LibCurl::Url, an error occurred setting the url.";
+    const std::string CERROR_HEADERDATA = "HTTPClient::LibCurl::HeaderData, an error occurred setting the callback header data object.";
+    const std::string CERROR_HEADERFUN = "HTTPClient::LibCurl::HeaderFunction, an error occurred setting the callback function.";
     const std::string CERROR_WRITEDATA = "HTTPClient::LibCurl::WriteData, an error occurred setting the callback write data object.";
     const std::string CERROR_WRITEFUN = "HTTPClient::LibCurl::WriteFunction, an error occurred setting the callback function.";
     const std::string CERROR_PERFORM = "HTTPClient::LibCurl::Perform, an error occurred performing the http request.";

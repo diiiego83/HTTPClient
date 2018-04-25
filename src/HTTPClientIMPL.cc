@@ -8,6 +8,10 @@
 #include "HTTPClientIMPL.h"
 #include "HTTPClientErrors.h"
 
+#include <algorithm> 
+
+#include <iostream> // TODO
+
 namespace httpclient {
 
 HTTPClient::HTTPClientIMPL::HTTPClientIMPL(): _libCurl(LibCurl::Load()) { }        
@@ -48,12 +52,20 @@ void HTTPClient::HTTPClientIMPL::send(const std::string& url,
         }
     }
 
+    // set the callback header function
+    if(_libCurl->setopt(_curl, CURLOPT_HEADERDATA, reinterpret_cast<void*>(this)) != CCOK) {
+        error_client(CERROR_HEADERDATA); return;
+    }
+    if(_libCurl->setopt(_curl, CURLOPT_HEADERFUNCTION, &HTTPClientIMPL::header_callback) != CCOK) {
+        error_client(CERROR_HEADERFUN); return;
+    }
+
     // set the callback write function
     if(_libCurl->setopt(_curl, CURLOPT_WRITEDATA, reinterpret_cast<void*>(this)) != CCOK) {
         error_client(CERROR_WRITEDATA); return;
     }
     if(_libCurl->setopt(_curl, CURLOPT_WRITEFUNCTION, &HTTPClientIMPL::write_callback) != CCOK) {
-        error_client(CERROR_WRITEDATA); return;
+        error_client(CERROR_WRITEFUN); return;
     }    
 
     // perform the http request
@@ -94,9 +106,56 @@ void HTTPClient::HTTPClientIMPL::reset_internal_status() {
         _res_buffer_default.clear();
     }
 
+    if(_res_headers_on) {
+        _res_headers.clear();
+    }
+
 }
 
-size_t HTTPClient::HTTPClientIMPL::write_callback(  char *ptr, 
+size_t HTTPClient::HTTPClientIMPL::header_callback( const void *ptr, 
+                                                    size_t size, 
+                                                    size_t nmemb, 
+                                                    void *userdata) {
+    size_t realsize = size * nmemb;
+    auto ccptr = reinterpret_cast<const char*>(ptr);
+    auto client = reinterpret_cast<HTTPClient::HTTPClientIMPL*>(userdata);
+
+    std::string str{ccptr, ccptr+realsize};
+    std::string key;
+    std::string::size_type pos = 0;
+
+    while ( ( pos = str.find ("\r\n", pos) ) != std::string::npos ) {
+        str.erase ( pos, 2 );
+    }
+
+    if(str.size()>0) {
+
+        if( ( pos = str.find(':') ) != std::string::npos ) {
+
+        key = str.substr(0, pos);
+        str = str.substr(pos+2);
+        key.erase(key.begin(), std::find_if(key.begin(), key.end(), [](int ch) {
+            return !std::isspace(ch);
+        }));
+        key.erase(std::find_if(key.rbegin(), key.rend(), [](int ch) {
+            return !std::isspace(ch);
+        }).base(), key.end()); 
+        str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](int ch) {
+            return !std::isspace(ch);
+        }));
+        str.erase(std::find_if(str.rbegin(), str.rend(), [](int ch) {
+            return !std::isspace(ch);
+        }).base(), str.end());      
+
+        client->_res_headers.emplace(key, str);
+
+        }
+    }
+
+    return realsize;                                                      
+}
+
+size_t HTTPClient::HTTPClientIMPL::write_callback(  const void *ptr, 
                                                     size_t size, 
                                                     size_t nmemb, 
                                                     void *userdata) {
@@ -112,7 +171,7 @@ size_t HTTPClient::HTTPClientIMPL::write_callback(  char *ptr,
         client->_res_buffer_default.insert(client->_res_buffer_default.end(), ccptr, ccptr + realsize);
     }
 
-  return realsize;
+    return realsize;
 
 }
 

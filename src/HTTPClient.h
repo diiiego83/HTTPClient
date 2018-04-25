@@ -33,6 +33,9 @@ public:
     void set_response_buffer(std::vector<char>* response_buffer);
     std::string get_resonse_message() const;
     uint64_t get_response_code() const;
+    void enable_response_headers();
+    void disable_response_headers();
+    std::unordered_map<std::string, std::string> get_response_headers() const;
 
     HTTP_STATUS status() const;
     std::string status_message() const;
