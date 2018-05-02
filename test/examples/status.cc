@@ -66,7 +66,9 @@ void client_http_status() {
         http.raise_for_status();
     } catch(std::runtime_error err) {
         std::cout<<" # "<<err.what()<<'\n';
+        return;
     }
+    std::cout<<" # No Exception has been trown\n";
 }
 
 int main(int argc, char* argv[]) {
@@ -79,6 +81,8 @@ int main(int argc, char* argv[]) {
 
     line();
     client_http_status();
+
+    line();
 
     return 0;
 }
