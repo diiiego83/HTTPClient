@@ -27,7 +27,7 @@ void get() {
 }
 
 // Perform a simple http get request
-// Request parameter set throtgh an external option object   
+// Request parameters set through an external option object   
 void get_opt() {
 
     HTTPOptions opt;
@@ -43,7 +43,7 @@ void get_opt() {
 
 }
 
-// Perform a simple http get requests multiple times
+// Perform a simple http get request multiple times
 void get_repeat() {
 
     HTTPOptions opt;
