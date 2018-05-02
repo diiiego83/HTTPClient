@@ -11,37 +11,27 @@
 
 using namespace httpclient;
 
-void inline print_line() {
+void inline line() {
     std::cout<<"----------------------------------------------------------------------\n";
 }
 
+// Perform a simple http get request
 void get() {
 
-    std::string url("https://httpstat.us/200"); 
-    
-    print_line();
-    std::cout<<" * Performes an http get call to "+url+"\n"; 
-
     HTTPClient http;
-    http.get(url, {{"Accept", "application/json"}});
+    http.get("https://httpstat.us/200", {{"Accept", "application/json"}});
     http.raise_for_status();
 
     std::cout<<"   - Response code: "<<http.get_response_code()<<'\n';
     std::cout<<"   - Response body: "<<http.get_resonse_message()<<'\n';
-
 }
 
-
+// Perform a simple http get request
+// Request parameter set throtgh an external option object   
 void get_opt() {
 
-    std::string url("https://httpstat.us/200");
-    
-    print_line();
-    std::cout<<" * Performes an http get call to "+url+"\n";
-    std::cout<<" * Call parameters set as ext options\n";    
-
     HTTPOptions opt;
-    opt.url = url;
+    opt.url = "https://httpstat.us/200";
     opt.headers["Accept"] = "application/json";
 
     HTTPClient http;
@@ -53,20 +43,15 @@ void get_opt() {
 
 }
 
+// Perform a simple http get requests multiple times
 void get_repeat() {
 
-    std::string url("https://httpstat.us/20");
-    
-    print_line();
-    std::cout<<" * Performes 5 http get call to "+url+"x\n";
-    std::cout<<" * Reuse the same client handler.\n";
-
     HTTPOptions opt;
-    opt.url = url + "0";
+    opt.url = "https://httpstat.us/200";
     opt.headers["Accept"] = "application/json";
 
     HTTPClient http;    
-    for(auto ii=0; ii<4; ii++) { 
+    for(auto ii=0; ii<4; ii++) {
 
         http.get(opt);
         http.raise_for_status();
@@ -74,7 +59,8 @@ void get_repeat() {
         std::cout<<"   - Response code: "<<http.get_response_code()<<'\n';
     }
 
-    opt.url = url + "4";
+    // change a request parameter and repeat again
+    opt.url = "https://httpstat.us/204";
     http.get(opt);      
     http.raise_for_status();
 
@@ -82,18 +68,14 @@ void get_repeat() {
 
 }
 
+// perform a simple http get request
+// the response buffer is externally set
 void get_response_external_buffer() {
-
-    std::string url("https://httpstat.us/200");
-    
-    print_line();
-    std::cout<<" * Performes an http get call to "+url+"\n";
-    std::cout<<" * Get the response by setting an external buffer\n";
 
     std::vector<char> mybuffer(1024);
 
     HTTPOptions opt;
-    opt.url = url;
+    opt.url = "https://httpstat.us/200";
     opt.headers["Accept"] = "application/json";
 
     HTTPClient http;
@@ -105,16 +87,13 @@ void get_response_external_buffer() {
     std::cout<<"   - Rsponse body: "<<mybuffer.data()<<'\n';    
 }
 
+// perform a simple http get request
+// and retrieve the response headers
 void get_response_headers() {
-    std::string url("https://httpstat.us/200"); 
-    
-    print_line();
-    std::cout<<" * Performes an http get call to "+url+"\n"; 
-    std::cout<<" * Print the response headers\n";
 
     HTTPClient http;
     http.enable_response_headers();
-    http.get(url);
+    http.get("https://httpstat.us/200");
     http.raise_for_status();
 
     auto headers = http.get_response_headers();
@@ -127,23 +106,28 @@ int main(int argc, char* argv[]) {
 
     try {
 
+        line();
         get();
 
+        line();
         get_opt();
 
+        line();
         get_repeat();
 
+        line();
         get_response_external_buffer();
 
+        line();
         get_response_headers();
 
     } catch(std::runtime_error err) {
         std::cout<<"[ERROR] "<<err.what()<<'\n';
-        print_line();
+        line();
         return 1;
     }
 
-    print_line();
+    line();
 
     return 0;
 }
