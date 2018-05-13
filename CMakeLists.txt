@@ -15,11 +15,11 @@ add_library(httpclient SHARED ${sources})
 # BUILD EXAMPLES ###############################################
 ################################################################
 
-file(GLOB sources test/examples/*.cc)
+file(GLOB sources examples/*.cc)
 foreach(source ${sources})
     get_filename_component(source ${source} NAME)
     string(REGEX REPLACE "\\.[^.]*$" "" program_name ${source})
-    add_executable(${program_name} test/examples/${source})
+    add_executable(${program_name} examples/${source})
     target_link_libraries(${program_name} httpclient curl)
     set_target_properties(${program_name} 
                           PROPERTIES RUNTIME_OUTPUT_DIRECTORY
